@@ -1,7 +1,7 @@
 bl_info = {
     "name": "InputDrivers",
     "author": "MagnumVD",
-    "version": (0, 3, 2),
+    "version": (0, 4, 0),
     "blender": (3, 6, 2),
     "location": "View3D > InputDrivers",
     "description": "Lets you set variables with XInput gamepads",
@@ -12,6 +12,7 @@ bl_info = {
 }
 
 import bpy
+import os
 from .functions import install_xinput
 
 
@@ -27,14 +28,25 @@ class Install_XInput_Operator(bpy.types.Operator):
         print("Reloading scripts")
         bpy.ops.script.reload()
         return {'FINISHED'}
-
-
+    
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_confirm(self, event)
 
 class InputDrivers_Preferences(bpy.types.AddonPreferences):
     bl_idname = __package__
     
+    dependencies_path: bpy.props.StringProperty(
+        name="Install path",
+        description="Directory where additional dependencies for the addon are downloaded",
+        subtype='DIR_PATH',
+        default=os.path.realpath(os.path.expanduser("~/MVD-addons dependencies/InputDrivers"))
+    ) # type: ignore
+    
     def draw(self,context):
         layout = self.layout
+        layout.prop(self, "dependencies_path")
+        layout.separator()
         if install_xinput.register() == {'REGISTERED'}:
             layout.label(text="XInput is installed, nothing to do here!")
         else:
@@ -42,7 +54,7 @@ class InputDrivers_Preferences(bpy.types.AddonPreferences):
             
             labels = row.column()
             labels.label(text="XInput needs to be installed,")
-            labels.label(text="please press the button while in administrator mode:")
+            labels.label(text="please press the button after selecting your Install path:")
             
             operators = row.column()
             operators.scale_y = 2.0
@@ -73,8 +85,6 @@ class TutorialPanel(bpy.types.Panel):
         
         layout.label(text="Navigate into the preferences of the addon and press the")
         layout.label(text="button which has 'Install' written on it.")
-        layout.label(text="!This requires Blender to be in administrator mode!")
-        layout.label(text="!Make sure to have it enabled, or it won't work!")
         layout.separator()
         
         layout.label(text='Step 2 - Setup:')
