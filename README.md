@@ -14,7 +14,7 @@ This addon also features a recorder for your inputs, so you can replay your acti
 
 Go into the preferences and install the addon. After that in the drop down menu under the addon, you can set an installation dir and then install the dependencies. This can take a little bit of time and will freeze blender. You can track the progress in the system console.
 
-Now, you can find InputDrivers in your image editor in the masking tab.
+Now, when you look into InputDrivers in the 3d viewer in the N-Panel, it should be waiting for a controller to be connected.
 
 ## Versions and compatibility
 
